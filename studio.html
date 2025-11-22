@@ -1,0 +1,984 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+    <title>JS Studio - Professional Photography in Kaloor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: #f39c12;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 80px 2rem 2rem;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Home Page */
+        #home {
+            background: url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=1200') center/cover;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #home::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .home-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .home-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .home-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            background: #f39c12;
+            color: #000;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: #e67e22;
+        }
+
+        /* About Page */
+        #about {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #f39c12;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .about-image {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(243, 156, 18, 0.3);
+        }
+
+        /* Gallery Page */
+        .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .letter-btn {
+            background: #333;
+            color: #fff;
+            border: 2px solid #f39c12;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .letter-btn:hover, .letter-btn.active {
+            background: #f39c12;
+            color: #000;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+            aspect-ratio: 1;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .caption {
+            transform: translateY(0);
+        }
+
+        /* Contact Page */
+        #contact {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #f39c12;
+            text-align: center;
+        }
+
+        .contact-info {
+            background: #111;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .contact-info p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-form {
+            background: #111;
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #f39c12;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        button[type="submit"] {
+            background: #f39c12;
+            color: #000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background: #e67e22;
+        }
+
+        /* Success Alert */
+        .success-alert {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            display: none;
+            animation: slideInRight 0.5s ease forwards;
+            min-width: 300px;
+        }
+
+        .success-alert.show {
+            display: block;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .success-alert.hide {
+            animation: slideOutRight 0.5s ease forwards;
+        }
+
+        .success-alert h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .success-alert p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .checkmark {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: #4CAF50;
+            border-radius: 50%;
+            position: relative;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .checkmark::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 10px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            font-size: 3rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .home-content h1 {
+                font-size: 2.5rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+            .hero {
+      background: linear-gradient(to right, #4f46e5, #6d28d9);
+      color: white;
+      padding: 120px 20px;
+    }
+    .feature-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    footer {
+      background: #111827;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      margin-top: 40px;
+    }
+     .hero-section {
+      height: 100vh;
+      background: linear-gradient(to right, #4f46e5, #6d28d9);
+      display: flex;
+      align-items: center;
+      color: white;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      transition: 0.3s;
+    }
+    .service-card {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+  }
+    </style>
+    
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a onclick="showPage('index')">Home</a></li>
+            <li><a onclick="showPage('about')">About</a></li>
+             <li><a onclick="showPage('Services')">Services</a></li>
+            <li><a onclick="showPage('gallery')">Gallery</a></li>
+            <li><a onclick="showPage('contact')">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Home Page -->
+     
+
+        <div id="index" class="page active">  
+
+<div class="card text-bg-dark text-center">
+  <img src="cm.png" class="card-img" alt="...">
+
+  <div class="card-img-overlay d-flex flex-column justify-content-center align-items-center">
+
+    <h2 class="card-title">JS Studio</h2>
+
+    <p class="card-text">Professional Photography in Kaloor</p>
+    <p class="card-text">   Wedding • Wildlife • Nature • Modeling • Portraits</p>
+
+    <div>
+      <a class="cta-button" onclick="showPage('gallery')">View Gallery</a>
+                   <a class="cta-button" onclick="showPage('Services')">Services</a>
+    </div>
+  </div>
+</div>
+
+  <!-- FEATURES SECTION -->
+  <section class="py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-4">Our Features</h2>
+
+    <div class="row g-4">
+      
+      <div class="col-md-4">
+        <div class="card p-4 shadow feature-card h-100 d-flex flex-column justify-content-center">
+          <h4 class="mb-2">Creative Professionals</h4>
+          <p class="mb-0">Our team includes experienced photographers, editors, and cinematographers.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card p-4 shadow feature-card h-100 d-flex flex-column justify-content-center">
+          <h4 class="mb-2">Customized Shoots</h4>
+          <p class="mb-0">Based on themes, concepts, and client ideas</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card p-4 shadow feature-card h-100 d-flex flex-column justify-content-center">
+          <h4 class="mb-2">100% Client Satisfaction</h4>
+          <p class="mb-0">Our priority is quality and long-lasting customer relationships.</p>
+        </div>
+      </div><br>
+       <div class="col-md-4">
+        <div class="card p-4 shadow feature-card h-100 d-flex flex-column justify-content-center">
+          <h4 class="mb-2">Affordable Packages</h4>
+          <p class="mb-0">Our team includes experienced photographers, editors, and cinematographers.</p>
+        </div>
+      </div>
+       <div class="col-md-4">
+        <div class="card p-4 shadow feature-card h-100 d-flex flex-column justify-content-center">
+          <h4 class="mb-2">Fast Delivery</h4>
+          <p class="mb-0">Edited photos and videos delivered quickly without compromising quality.</p>
+        </div>
+      </div>
+       <div class="col-md-4">
+        <div class="card p-4 shadow feature-card h-100 d-flex flex-column justify-content-center">
+          <h4 class="mb-2">Perfect Lighting Setup</h4>
+          <p class="mb-0">Softbox, umbrella lights, RGB lights, and studio backgrounds.</p>
+        </div>
+      </div>
+
+    </div>
+  </div><br>
+</section>
+<div class="card text-center" 
+     style="background-color: #0b0b0b; color: white; border: 1px solid #444; border-radius: 15px;">
+
+  <div class="card-header" 
+       style="background-color: #111; border-bottom: 1px solid #333; font-size: 20px; font-weight: bold;">
+    JS Studio – Photography
+  </div>
+
+  <div class="card-body" style="padding: 30px;">
+    
+    <h3 class="card-title" style="font-size: 28px; font-weight: bold; margin-bottom: 15px;">
+      Capture Your Best Moments
+    </h3>
+
+    <p class="card-text" style="font-size: 18px; line-height: 1.6; color: #e0e0e0;">
+      We specialize in Wedding, Fashion, Portrait, and Outdoor Photography.
+      Experience professional shoots with stunning visuals and creativity.
+    </p>
+
+    <a onclick="showPage('contact')" class="btn btn-light" 
+       style="padding: 10px 25px; border-radius: 30px; font-weight: bold; margin-top: 15px;">
+    Contact As
+    </a>
+
+  </div>
+
+  <div class="card-footer text-body-secondary" 
+       style="background-color: #111; border-top: 1px solid #333; color: #aaa;">
+   
+  </div>
+
+</div>
+</div>
+
+
+    <!-- About Page -->
+    <div id="about" class="page active">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>About JS Studio</h2>
+                <p>Welcome to JS Studio, your premier photography destination in Kaloor. We specialize in capturing the breathtaking beauty of nature and the magnificent diversity of wildlife.</p>
+                <p>With years of experience and a passion for natural photography, our studio brings you stunning visuals that tell stories of the natural world around us.</p>
+                <p>Located in the heart of Kaloor, we pride ourselves on our dedication to quality, creativity, and capturing those perfect moments that showcase the wonders of nature and wildlife.</p>
+                <p>Whether you're looking for nature photography, wildlife portraits, or landscape captures, JS Studio delivers exceptional results that exceed expectations.</p>
+            </div>
+            <img src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600" alt="JS Studio" class="about-image">
+        </div>
+    </div>
+
+    <!-- Gallery Page -->
+    <div id="gallery" class="page">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem; color: #f39c12;">Our Gallery</h2>
+        
+        <div class="alphabet-nav" id="alphabetNav"></div>
+        
+        <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <!-- Services Page -->
+<div id="Services" class="page">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+  <section class="py-5" style="background-color: #000; color: #fff;">
+    <div class="container text-center">
+
+      <h2 class="fw-bold mb-3" data-aos="fade-up" style="color: #ffffff;">
+        Our Studio Services
+      </h2>
+
+      <p class="mb-5" data-aos="fade-up" data-aos-delay="150" style="color: #d0d0d0;">
+        Professional photography & videography services for every occasion.
+      </p>
+
+      <div class="row g-4">
+
+        <!-- Photography -->
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+          <div class="card h-100 p-4 border-0"
+               style="background-color: #111; color: #fff; border-radius: 12px;">
+            <div class="fs-1 mb-3">📸</div>
+            <h4 class="fw-bold">Photography</h4>
+            <p style="color: #ccc;">
+              Wedding, Portrait, Product, Fashion, Baby Shoot & Outdoor Shoots.
+            </p>
+          </div>
+        </div>
+
+        <!-- Videography -->
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+          <div class="card h-100 p-4 border-0"
+               style="background-color: #111; color: #fff; border-radius: 12px;">
+            <div class="fs-1 mb-3">🎬</div>
+            <h4 class="fw-bold">Videography</h4>
+            <p style="color: #ccc;">
+              Cinematic Films, Drone Shots, Pre-Wedding Videos & Event Coverage.
+            </p>
+          </div>
+        </div>
+
+        <!-- Editing -->
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+          <div class="card h-100 p-4 border-0"
+               style="background-color: #111; color: #fff; border-radius: 12px;">
+            <div class="fs-1 mb-3">💻</div>
+            <h4 class="fw-bold">Editing & Retouching</h4>
+            <p style="color: #ccc;">
+              Photo Retouching, Color Grading, Cinematic Edits & Album Design.
+            </p>
+          </div>
+        </div>
+
+        <!-- Studio Setup -->
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="400">
+          <div class="card h-100 p-4 border-0"
+               style="background-color: #111; color: #fff; border-radius: 12px;">
+            <div class="fs-1 mb-3">🎛️</div>
+            <h4 class="fw-bold">Studio Setup</h4>
+            <p style="color: #ccc;">
+              Lighting, Backdrops, Indoor Themes & Professional Set Arrangements.
+            </p>
+          </div>
+        </div>
+
+        <!-- Event Coverage -->
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="500">
+          <div class="card h-100 p-4 border-0"
+               style="background-color: #111; color: #fff; border-radius: 12px;">
+            <div class="fs-1 mb-3">🎉</div>
+            <h4 class="fw-bold">Event Coverage</h4>
+            <p style="color: #ccc;">
+              Birthdays, Corporate Events, Functions, Festivals & Ceremonies.
+            </p>
+          </div>
+        </div>
+        <!-- Album & Print -->
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="600">
+          <div class="card h-100 p-4 border-0"
+               style="background-color: #111; color: #fff; border-radius: 12px;">
+            <div class="fs-1 mb-3">📚</div>
+            <h4 class="fw-bold">Album & Printing</h4>
+            <p style="color: #ccc;">
+              Premium Albums, Wall Frames, Custom Prints & Instant Photo Prints.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+        
+
+    <!-- Contact Page -->
+    <div id="contact" class="page">
+        <div class="contact-content">
+            <h2>Contact Us</h2>
+            
+            <div class="contact-info">
+                <p>📍 <strong>Address:</strong> JS Studio, Kaloor, Kochi, Kerala</p>
+                <p>📞 <strong>Phone:</strong> +91 XXXXX XXXXX</p>
+                <p>✉️ <strong>Email:</strong> info@jsstudio.com</p>
+                <p>⏰ <strong>Hours:</strong> Mon-Sat: 9:00 AM - 6:00 PM</p>
+            </div>
+
+            <div class="contact-form">
+                <h3 style="margin-bottom: 1.5rem;">Send us a message</h3>
+                <form onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea required></textarea>
+                    </div>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal" onclick="closeModal()">
+        <span class="close-modal">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <!-- Success Alert -->
+    <div class="success-alert" id="successAlert">
+        <h3><span class="checkmark"></span> Success!</h3>
+        <p>Your message has been sent successfully. We'll contact you soon!</p>
+    </div>
+ <footer class="bg-dark text-white text-center py-3">
+    <p class="mb-0">Developed by George Vincent.&nbsp;  || &nbsp; All Rights Reserved.</p>
+  </footer>
+    <script>
+        // Gallery data - Nature and Animals
+        const galleryData = {
+            'A': [
+                {img: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7', title: 'African Elephant'},
+                {img: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1', title: 'Arctic Fox'}
+            ],
+            'B': [
+                {img: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4', title: 'Butterfly'},
+                {img: 'https://images.unsplash.com/photo-1589656966895-2f33e7653819', title: 'Bear'}
+            ],
+            'C': [
+                {img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba', title: 'Cat'},
+                {img: 'https://images.unsplash.com/photo-1544376664-80b17f09d399', title: 'Cheetah'}
+            ],
+            'D': [
+                {img: 'https://images.unsplash.com/photo-1517849845537-4d257902454a', title: 'Dog'},
+                {img: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1', title: 'Deer'}
+            ],
+            'E': [
+                {img: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7', title: 'Elephant'},
+                {img: 'https://images.unsplash.com/photo-1544776193-352d25ca82cd', title: 'Eagle'}
+            ],
+            'F': [
+                {img: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1', title: 'Fox'},
+                {img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19', title: 'Flamingo'}
+            ],
+            'G': [
+                {img: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d', title: 'Giraffe'},
+                {img: 'https://images.unsplash.com/photo-1504006833117-8886a355efbf', title: 'Gorilla'}
+            ],
+            'H': [
+                {img: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a', title: 'Horse'},
+                {img: 'https://images.unsplash.com/photo-1490718720478-364a07a997cd', title: 'Hummingbird'}
+            ],
+            'I': [
+                {img: 'https://images.unsplash.com/photo-1615671524827-c1fe3973b648', title: 'Iguana'},
+                {img: 'https://images.unsplash.com/photo-1504006833117-8886a355efbf', title: 'Insects'}
+            ],
+            'J': [
+                {img: 'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f', title: 'Jaguar'},
+                {img: 'https://images.unsplash.com/photo-1444464666168-49d633b86797', title: 'Jellyfish'}
+            ],
+            'K': [
+                {img: 'https://images.unsplash.com/photo-1549366021-9f761d450615', title: 'Koala'},
+                {img: 'https://images.unsplash.com/photo-1544376664-80b17f09d399', title: 'Kingfisher'}
+            ],
+            'L': [
+                {img: 'https://images.unsplash.com/photo-1552410260-0fd9b577afa6', title: 'Lion'},
+                {img: 't1.png', title: 'Leopard'}
+            ],
+            'M': [
+                {img: 'https://images.unsplash.com/photo-1540573133985-87b6da6d54a9', title: 'Monkey'},
+                {img: 'https://images.unsplash.com/photo-1506755855567-92ff770e8d00', title: 'Mountains'}
+            ],
+            'N': [
+                {img: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05', title: 'Nature Landscape'},
+                {img: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba', title: 'Northern Lights'}
+            ],
+            'O': [
+                {img: 'https://images.unsplash.com/photo-1545389336-cf090694435e', title: 'Owl'},
+                {img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19', title: 'Ocean'}
+            ],
+            'P': [
+                {img: 'https://images.unsplash.com/photo-1551244072-5d12893278ab', title: 'Panda'},
+                {img: 'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f', title: 'Peacock'}
+            ],
+            'Q': [
+                {img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19', title: 'Quail'},
+                {img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4', title: 'Quiet Forest'}
+            ],
+            'R': [
+                {img: 'https://images.unsplash.com/photo-1549366021-9f761d450615', title: 'Rabbit'},
+                {img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e', title: 'River'}
+            ],
+            'S': [
+                {img: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d', title: 'Squirrel'},
+                {img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d', title: 'Sunset'}
+            ],
+            'T': [
+                {img: 'm1.png', title: 'Tiger'},
+                {img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b', title: 'Trees'}
+            ],
+            'U': [
+                {img: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba', title: 'Underwater Life'},
+                {img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4', title: 'Untamed Wilderness'}
+            ],
+            'V': [
+                {img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19', title: 'Vulture'},
+                {img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e', title: 'Valley'}
+            ],
+            'W': [
+                {img: 'w1.png', title: 'Wolf'},
+                {img: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05', title: 'Waterfall'}
+            ],
+            'X': [
+                {img: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba', title: 'Exotic Birds'},
+                {img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4', title: 'Xtreme Nature'}
+            ],
+            'Y': [
+                {img: 'https://images.unsplash.com/photo-1551244072-5d12893278ab', title: 'Yak'},
+                {img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d', title: 'Yellow Sunset'}
+            ],
+            'Z': [
+                {img: 'https://images.unsplash.com/photo-1551244072-5d12893278ab', title: 'Zebra'},
+                {img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e', title: 'Zen Garden'}
+            ]
+        };
+
+        // Initialize alphabet navigation
+        function initAlphabetNav() {
+            const nav = document.getElementById('alphabetNav');
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                const btn = document.createElement('button');
+                btn.className = 'letter-btn';
+                btn.textContent = letter;
+                btn.onclick = () => filterGallery(letter);
+                nav.appendChild(btn);
+            }
+        }
+
+        // Filter gallery by letter
+        function filterGallery(letter) {
+            const buttons = document.querySelectorAll('.letter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            if (galleryData[letter]) {
+                galleryData[letter].forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'gallery-item';
+                    div.style.animationDelay = `${index * 0.1}s`;
+                    div.innerHTML = `
+                        <img src="${item.img}" alt="${item.title}">
+                        <div class="caption">${item.title}</div>
+                    `;
+                    div.onclick = () => openModal(item.img);
+                    grid.appendChild(div);
+                });
+            }
+        }
+
+        // Show all gallery items initially
+        function showAllGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+            let index = 0;
+            Object.values(galleryData).flat().forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.style.animationDelay = `${(index % 20) * 0.05}s`;
+                div.innerHTML = `
+                    <img src="${item.img}" alt="${item.title}">
+                    <div class="caption">${item.title}</div>
+                `;
+                div.onclick = () => openModal(item.img);
+                grid.appendChild(div);
+                index++;
+            });
+        }
+
+        // Page navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            if (pageId === 'gallery') {
+                showAllGallery();
+            }
+        }
+
+        // Modal functions
+        function openModal(imgSrc) {
+            document.getElementById('modalImage').src = imgSrc;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Form submission
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            // Show success alert with animation
+            const alert = document.getElementById('successAlert');
+            alert.classList.remove('hide');
+            alert.classList.add('show');
+            
+            // Hide alert after 4 seconds
+            setTimeout(() => {
+                alert.classList.remove('show');
+                alert.classList.add('hide');
+            }, 4000);
+            
+            // Reset form
+            e.target.reset();
+        }
+
+        // Initialize
+        initAlphabetNav();
+    </script>
+</body>
+</html>
